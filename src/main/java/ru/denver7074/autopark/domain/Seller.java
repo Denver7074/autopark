@@ -1,5 +1,7 @@
 package ru.denver7074.autopark.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 import lombok.AccessLevel;
@@ -9,9 +11,14 @@ import lombok.experimental.Accessors;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.FieldNameConstants;
 import ru.denver7074.autopark.domain.common.IdentityEntity;
+import ru.denver7074.autopark.service.CrudService;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.apache.commons.lang3.BooleanUtils.isFalse;
+import static ru.denver7074.autopark.utils.Constants.pattern;
+import static ru.denver7074.autopark.utils.Errors.E003;
 
 @Data
 @Entity
@@ -21,10 +28,15 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Seller extends IdentityEntity {
 
-    String name;
-    String email;
-    String fio;
+    String nameCompany;
+    String emailCompany;
+    String fullNameWorker;
+    @JsonIgnoreProperties("seller")
     @OneToMany(mappedBy = "seller")
     List<Owner> owners = new ArrayList<>();
 
+    public void validate(CrudService crudService) {
+        E003.thr(isFalse(pattern.matcher(this.getEmailCompany()).matches()),
+                this.getEmailCompany());
+    }
 }
