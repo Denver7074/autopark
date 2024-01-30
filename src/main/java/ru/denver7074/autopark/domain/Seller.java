@@ -1,6 +1,7 @@
 package ru.denver7074.autopark.domain;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
@@ -31,9 +32,9 @@ public class Seller extends IdentityEntity {
     String nameCompany;
     String emailCompany;
     String fullNameWorker;
-    @JsonIgnoreProperties("seller")
+    @JsonIgnore
     @OneToMany(mappedBy = "seller")
-    List<Owner> owners = new ArrayList<>();
+    List<Car> cars = new ArrayList<>();
 
     public void validate(CrudService crudService) {
         E003.thr(isFalse(pattern.matcher(this.getEmailCompany()).matches()),

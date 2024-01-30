@@ -32,9 +32,11 @@ public class Car extends IdentityEntity {
     String vin;
     LocalDate buildDate;
     @ManyToOne
-    @JsonIgnoreProperties("car")
     @JoinColumn(name = "owner_id")
     Owner owner;
+    @ManyToOne
+    @JoinColumn(name = "seller_id")
+    Seller seller;
 
     public void validate(CrudService crudService) {
         E004.thr(isNotEmpty(crudService.find(Car.class, Map.of(Fields.vin, this.getVin()))), this.getVin());

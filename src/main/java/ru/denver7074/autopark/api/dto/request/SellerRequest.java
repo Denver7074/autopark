@@ -10,10 +10,12 @@ import lombok.experimental.Accessors;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.FieldNameConstants;
 
+import java.io.Serializable;
+
 @Data
 @Accessors(chain = true)
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class SellerRequest {
+public class SellerRequest implements Serializable {
 
     @NotEmpty
     @Schema(description = "Название компании")
