@@ -12,18 +12,14 @@ import lombok.experimental.FieldDefaults;
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.util.CastUtils;
-import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 import ru.denver7074.autopark.domain.common.IdentityEntity;
-import ru.denver7074.autopark.utils.Utils;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.BooleanUtils.isFalse;
 import static ru.denver7074.autopark.utils.Errors.E001;
 
@@ -48,12 +44,12 @@ public class CrudService<ID> {
 
     public <E extends IdentityEntity> E findById(ID id, Class<E> clazz) {
         return Optional.ofNullable(entityManager.find(clazz, id))
-                .orElseThrow(() -> E001.thr(clazz, id));
+                .orElseThrow(() -> E001.thr(clazz.getSimpleName(), id));
     }
 
     public <E extends IdentityEntity, D> E update(D source, ID id, Class<E> clazz) {
         E target = findById(id, clazz);
-        modelMapper.map(source, target);
+        modelMapper.map(source, target.reach(this));
         entityManager.persist(target);
         return CastUtils.cast(target);
     }

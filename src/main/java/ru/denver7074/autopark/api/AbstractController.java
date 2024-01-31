@@ -1,6 +1,7 @@
 package ru.denver7074.autopark.api;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -29,7 +30,7 @@ public class AbstractController<E extends IdentityEntity, D, DTO extends Seriali
     CrudService<Long> crudService;
     Mapper<E, DTO, D> mapper;
 
-    public AbstractController(Class<E> clazz, Class<D> dtoRequest, Class<DTO> dtoResponse,  CrudService<Long> crudService, Mapper<E, DTO, D> mapper) {
+    public AbstractController(Class<E> clazz, Class<D> dtoRequest, Class<DTO> dtoResponse, CrudService<Long> crudService, Mapper<E, DTO, D> mapper) {
         this.clazz = clazz;
         this.dtoRequest = dtoRequest;
         this.dtoResponse = dtoResponse;
@@ -39,7 +40,11 @@ public class AbstractController<E extends IdentityEntity, D, DTO extends Seriali
 
     @DeleteMapping("{id}")
     @Operation(description = "Метод удаления элемента справочника по идентификатору",
-            summary = "Метод удаления элемента справочника по идентификатору")
+            summary = "Метод удаления элемента справочника по идентификатору",
+            responses = {
+                    @ApiResponse(responseCode = "001", description = "Сущность с таким id не найдена")
+            }
+    )
     public PositiveResponse<String> deleteById(@PathVariable Long id) {
         crudService.delete(id, clazz);
         return ResponseApi.positiveResponse("Ok");
@@ -47,7 +52,11 @@ public class AbstractController<E extends IdentityEntity, D, DTO extends Seriali
 
     @GetMapping("find/{id}")
     @Operation(description = "Метод поиска по id",
-            summary = "Метод поиска по id")
+            summary = "Метод поиска по id",
+            responses = {
+                    @ApiResponse(responseCode = "001", description = "Сущность с таким id не найдена")
+            }
+    )
     public PositiveResponse<DTO> findById(@PathVariable Long id) {
         E byId = crudService.findById(id, clazz);
         return ResponseApi.positiveResponse(mapper.toDTO(byId));
@@ -65,8 +74,12 @@ public class AbstractController<E extends IdentityEntity, D, DTO extends Seriali
     }
 
     @PatchMapping("update/{id}")
-    @Operation(description = "Метод поиска сущностей",
-            summary = "Метод поиска сущностей")
+    @Operation(description = "Метод частичного обновления сущности",
+            summary = "Метод частичного обновления сущности",
+            responses = {
+                    @ApiResponse(responseCode = "003", description = "Неккоректный ввод email")
+            }
+    )
     public PositiveResponse<E> update(@PathVariable Long id, @RequestBody D dto) {
         E update = crudService.update(dto, id, clazz);
         return ResponseApi.positiveResponse(update);
