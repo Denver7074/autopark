@@ -19,7 +19,7 @@
 - PostgreSQL 15-alpine
 - Docker 24.0.6
 - Сборщик проектов Gradle
-## Развертывание PostgreSQL, Redis, Spring Vault с помощью Docker Compose
+## Развертывание PostgreSQL с помощью Docker Compose
 ```yaml
 version: "3.9"
 
